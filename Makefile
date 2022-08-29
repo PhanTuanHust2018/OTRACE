@@ -1,11 +1,9 @@
 all:
 	gcc OTRACE.c -o bin/OTRACE -lpthread
-	gcc OAMH.c -o bin/OAMH -lpthread
-	gcc L3_gNB.c -o bin/L3_gNB -lpthread
+	gcc L3_RRC.c -o bin/L3_RRC -lpthread
 	gcc UE.c -o bin/UE -lpthread
 
 clean:
 	rm bin/OTRACE
-	rm bin/OAMH
-	rm bin/L3_gNB
+	rm bin/L3_RRC
 	rm bin/UE
