@@ -77,4 +77,4 @@ struct RRC_SETUP_REQUEST{
 
 };
 
-struct 
+// struct 
