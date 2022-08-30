@@ -15,6 +15,21 @@
 
 char *rrc_otrace_datal;
 
+void *process_trace_data(void* sockfd){
+    char buffer[1024];
+    int _sockfd;
+    _sockfd = *(int*)sockfd;
+    if(recv(_sockfd,(void*)(&buffer),sizeof(buffer),0) < 0){
+        perror("receive request fail\n");
+    }
+    else{
+        
+    }
+
+    printf("process data\n");
+
+}
+
 void *socket_client(){
     int sockfd = -1;
     struct sockaddr_in sever_addr;
@@ -34,20 +49,22 @@ void *socket_client(){
         perror("connect fail\n");
     }
     else{
+        /*---------------send request------------*/
         struct RRC_OTRACE_START_REQ _RRC_OTRACE_START_REQ=
         {
             MSG_START_REQ,
             TRACE_INTERFACE_Uu,
-            1,
-            111111
+            1, //cell_ID
+            111111,  //Subsriber_ID
+            100, //second
         };
         memcpy(send_buffer,&_RRC_OTRACE_START_REQ,sizeof(send_buffer));
         if(send(sockfd, (void*)&send_buffer,sizeof(send_buffer),0) < 0){
             perror("send fail\n");
         }
-        memset(recv_buffer, 0, sizeof(recv_buffer));
+        /*--------------wait for respond-----------*/
         if(recv(sockfd,(void*)(&recv_buffer),sizeof(recv_buffer),0) < 0){
-            perror("recive request fail\n");
+            perror("receive request fail\n");
         }
         else
         {
@@ -57,10 +74,16 @@ void *socket_client(){
             if(_RRC_OTRACE_START_RESP.msg_type == MSG_START_RESP)
                 printf("MSG_STOP_REQ\n");
             printf("Recive data resp_type: %d\n",_RRC_OTRACE_START_RESP.resp_type);
-            if(_RRC_OTRACE_START_RESP.resp_type == SUCCEED)
+            if(_RRC_OTRACE_START_RESP.resp_type == SUCCESS)
                 printf("SUCCEED\n");
-            printf("Duration: %d\n",_RRC_OTRACE_START_RESP.duration);
+            printf("start_time: %d\n",_RRC_OTRACE_START_RESP.start_time);
         }
+        /*--------------create new thread for reciving OTRACE data only---------*/
+        pthread_t t_trace_data;
+        int *ptr_sockfd;
+        ptr_sockfd = &sockfd;
+        pthread_create(&t_trace_data,NULL,process_trace_data,(void*)&ptr_sockfd);
+        pthread_join(t_trace_data,NULL);
     }
     close(sockfd);
     pthread_exit(NULL);

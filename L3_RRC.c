@@ -15,7 +15,7 @@
 void *socket_sever(void* port){
     printf("Thread socket sever L3_RRC run !\n");
     int listenfd = -1, connfd = -1;
-    struct sockaddr_in server_addr;
+    struct sockaddr_in server_addr,client_addr;
     char send_buffer[1024];
     char recv_buffer[1024];
     time_t ticks;
@@ -32,12 +32,19 @@ void *socket_sever(void* port){
     server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     server_addr.sin_port = htons(*(int*)port);
 
+
     bind(listenfd,(struct sockaddr*)&server_addr,sizeof(server_addr));
     listen(listenfd,10);
 
     while (1)
     {
-        connfd = accept(listenfd,(struct sockaddr*)NULL, NULL);
+        socklen_t addr_size;
+        addr_size = sizeof(struct sockaddr_in);
+        // connfd = accept(listenfd,(struct sockaddr*)NULL, NULL);
+        // connfd = accept(listenfd,(struct sockaddr*)&client_addr, (socklen_t*) sizeof(struct sockaddr_in));
+        connfd = accept(listenfd,(struct sockaddr*)&client_addr, &addr_size);
+        printf("client port: %d\n",ntohs(client_addr.sin_port));
+
         /*------------recv request from OTRACE--------------- */
         if(recv(connfd,(void*)(&recv_buffer),sizeof(recv_buffer),0) < 0){
             perror("recive request fail\n");
@@ -54,12 +61,13 @@ void *socket_sever(void* port){
                 printf("TRACE_INTERFACE_Uu\n");
             printf("Recive data cell_id: %d\n",recv_cmd.cell_id);
             printf("Recive data subscriber_id: %d\n",recv_cmd.subscriber_id);
+            printf("Recive data duration: %d\n",recv_cmd.trace_duration);
             // ---------------send respond to OTRACE-----------
             if(recv_cmd.msg_type == MSG_START_REQ)
             {
                 struct RRC_OTRACE_START_RESP _RRC_OTRACE_START_RESP = {
                     MSG_START_RESP,
-                    SUCCEED,
+                    SUCCESS, // FAIL or SUCCESS
                     100 // 100 second for trace, then shut off
                 };
                 memcpy(send_buffer,&_RRC_OTRACE_START_RESP,sizeof(_RRC_OTRACE_START_RESP));
@@ -67,7 +75,6 @@ void *socket_sever(void* port){
                     perror("send respond fail\n");
                 }
             }
-
         }
         close(connfd);
     }

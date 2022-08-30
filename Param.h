@@ -13,7 +13,7 @@
 #define TRACE_INTERFACE_X2AP 3
 
 #define FAIL 0
-#define SUCCEED 1
+#define SUCCESS 1
 
 struct RRC_OTRACE_START_REQ
 {
@@ -21,13 +21,14 @@ struct RRC_OTRACE_START_REQ
     uint8_t trace_type;
     uint8_t cell_id;
     int subscriber_id;
+    int trace_duration; //seccond
 };
 
 struct RRC_OTRACE_START_RESP
 {
     uint8_t msg_type;
     uint8_t resp_type;
-    int duration; //second
+    int start_time; //second
 
 };
 
@@ -71,10 +72,14 @@ struct RRC_SETUP_HEADER
 };
 
 struct RRC_SETUP_REQUEST{
+    struct RRC_SETUP_HEADER header;
     uint64_t ue_Identity_randomeVal:39;
     char establishmentCause:1;
     char spare:1;
 
 };
 
-// struct 
+struct OTRACE_DATA{
+    RRC_OTRACE_DATA_Header header;
+    
+} ;
