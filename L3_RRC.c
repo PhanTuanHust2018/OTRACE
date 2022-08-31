@@ -74,6 +74,69 @@ void *socket_sever(void* port){
                 if(send(connfd,(void*)(&send_buffer),sizeof(send_buffer),0) < 0){
                     perror("send respond fail\n");
                 }
+                switch (recv_cmd.trace_type)
+                {
+                case TRACE_INTERFACE_Uu:
+                {
+                    struct RRC_SETUP_REQUEST _rrc_set_up_request; //= (struct RRC_SETUP_REQUEST*)malloc(sizeof(struct RRC_SETUP_REQUEST));
+                    _rrc_set_up_request.header.Subscription_ID = sub_id;
+                    _rrc_set_up_request.header.Misc_ID = misc_id;
+                    _rrc_set_up_request.header.Pkt_Version = ptk_version;
+                    _rrc_set_up_request.header.RRC_release_Number_Major_minor = RRC_release_number_major_minor;
+                    _rrc_set_up_request.header.Radio_Bearer_ID = Radio_bearer_id;
+                    _rrc_set_up_request.header.Physical_Cell_ID = PCI;
+                    _rrc_set_up_request.header.NR_Cell_Global_ID = NR_cell_global_ID_;
+                    _rrc_set_up_request.header.Freq = Freq_;
+                    _rrc_set_up_request.header.sfn = SFN;
+                    _rrc_set_up_request.header.SubFrameNum = SubFramNum;
+                    _rrc_set_up_request.header.slot = SLOT;
+                    _rrc_set_up_request.header.PDU_Number = PDU_number;
+                    _rrc_set_up_request.header.Msg_length =Msg_length_;
+                    _rrc_set_up_request.header.SIB_Mask_in_SI = SIB_Mask_in_SI_;
+
+                    _rrc_set_up_request.ue_Identity_randomeVal = 8888; // need write a function for random UE ID
+                    _rrc_set_up_request.establishmentCause = mo_Signalling;
+                    _rrc_set_up_request.spare = 0;
+
+                    struct OTRACE_DATA_RRC_SETUP_REQ*_otrace_data = (struct OTRACE_DATA_RRC_SETUP_REQ*)malloc(sizeof(struct OTRACE_DATA_RRC_SETUP_REQ));
+                    _otrace_data->header.msg_type = MSG_DATA;
+                    _otrace_data->header.trace_type = TRACE_INTERFACE_Uu;
+                    _otrace_data->header.cell_id = 1;
+                    _otrace_data->header.subscriber_id = 11111; // can xem lai
+                    _otrace_data->header.data_length = sizeof(struct OTRACE_DATA_RRC_SETUP_REQ); // can xem lai
+                    _otrace_data->data = _rrc_set_up_request;
+
+                    memset(send_buffer,0,sizeof(send_buffer));
+                    memcpy(send_buffer,_otrace_data,sizeof(struct OTRACE_DATA_RRC_SETUP_REQ));
+                    if(send(connfd,(void*)(&send_buffer),sizeof(send_buffer),0) < 0){
+                        perror("send respond fail\n");
+                    }
+                    // for (int i = 0; i< 64;i++){
+                    //     printf("%d\n",(uint8_t)*(send_buffer+i));
+                    // //     // printf("-------%ld\n",sizeof(struct RRC_SETUP_REQUEST));
+                    // //     // printf("-------%ld\n",sizeof(struct RRC_SETUP_HEADER));
+                    // }
+                    free(_otrace_data);
+                    // free(_rrc_set_up_request);
+                    break;
+                };
+                case TRACE_INTERFACE_S1AP:
+                    {
+                        break;
+                    }
+                    
+                case TRACE_INTERFACE_X2AP:
+                    {
+                        break;
+                    }
+                case TRACE_ALL:
+                    {
+                        break;
+                    }
+                default:
+                    break;
+                }
+
             }
         }
         close(connfd);

@@ -10,25 +10,45 @@
 #define TRACE_ALL 1
 #define TRACE_INTERFACE_Uu 2
 #define TRACE_INTERFACE_S1AP 3
-#define TRACE_INTERFACE_X2AP 3
+#define TRACE_INTERFACE_X2AP 4
 
 #define FAIL 0
 #define SUCCESS 1
 
+/*-----define param for simulation-------*/
+#define sub_id 1
+#define misc_id 0
+#define ptk_version 12
+#define RRC_release_number_major_minor 15100
+#define Radio_bearer_id 0
+#define PCI 422
+#define NR_cell_global_ID_ 3
+#define Freq_ 500910
+#define SFN 99
+#define SubFramNum 3
+#define SLOT 77
+#define PDU_number 55
+#define Msg_length_ 6
+#define SIB_Mask_in_SI_ 0x0C
+
+enum EstablishmentCause  {emergency, highPriorityAccess, mt_Access, mo_Signalling, mo_Data, mo_VoiceCall, mo_VideoCall,
+mp_SMS, mps_PriorityAccess, mcs_PriorityAccess, spare6, spare5, spare4, spare3, spare2, spare1};
+// #define mo_Signalling 1
+/*---------------------------------------*/
 struct RRC_OTRACE_START_REQ
 {
     uint8_t msg_type;
     uint8_t trace_type;
     uint8_t cell_id;
     int subscriber_id;
-    int trace_duration; //seccond
+    int trace_duration; //second measurement unit
 };
 
 struct RRC_OTRACE_START_RESP
 {
     uint8_t msg_type;
     uint8_t resp_type;
-    int start_time; //second
+    int start_time;
 
 };
 
@@ -62,7 +82,7 @@ struct RRC_SETUP_HEADER
     uint16_t Radio_Bearer_ID;
     uint16_t Physical_Cell_ID;
     uint16_t NR_Cell_Global_ID;
-    uint16_t Freq;
+    int Freq;
     uint16_t sfn;
     uint16_t SubFrameNum;
     uint16_t slot;
@@ -73,13 +93,17 @@ struct RRC_SETUP_HEADER
 
 struct RRC_SETUP_REQUEST{
     struct RRC_SETUP_HEADER header;
-    uint64_t ue_Identity_randomeVal:39;
-    char establishmentCause:1;
-    char spare:1;
-
+    // uint64_t ue_Identity_randomeVal:39;
+    // uint8_t establishmentCause:7;
+    // char spare:1;
+    uint64_t ue_Identity_randomeVal;
+    uint8_t establishmentCause;
+    uint8_t spare;
 };
 
-struct OTRACE_DATA{
-    RRC_OTRACE_DATA_Header header;
-    
+
+struct OTRACE_DATA_RRC_SETUP_REQ{
+    struct RRC_OTRACE_DATA_Header header;
+    struct RRC_SETUP_REQUEST data;
 } ;
+
