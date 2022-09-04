@@ -12,6 +12,12 @@
 #define TRACE_INTERFACE_S1AP 3
 #define TRACE_INTERFACE_X2AP 4
 
+#define RRC_setup_req 1
+#define RRC_setup 2
+#define RRC_setup_complete 3
+#define RRC_realease 4
+
+
 #define FAIL 0
 #define SUCCESS 1
 
@@ -24,7 +30,7 @@
 #define PCI 422
 #define NR_cell_global_ID_ 3
 #define Freq_ 500910
-#define SFN 99
+#define SFN 88
 #define SubFramNum 3
 #define SLOT 77
 #define PDU_number 55
@@ -48,8 +54,7 @@ struct RRC_OTRACE_START_RESP
 {
     uint8_t msg_type;
     uint8_t resp_type;
-    int start_time;
-
+    // int start_time;
 };
 
 struct RRC_OTRACE_DATA_Header
