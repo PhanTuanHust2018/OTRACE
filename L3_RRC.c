@@ -238,12 +238,15 @@ void *socket_UE(void *port)
         /*wait for RRC setup request from UE*/
         while (1)
         {
-            if (recv(connfd, (void *)(&buffer), sizeof(buffer), 0) < 0)
+            int a = recv(connfd, (void *)(&buffer), sizeof(buffer), 0);
+            if (a < 0)
             {
                 perror("recive request fail\n");
             }
-            else
+
+            else if (a > 0)
             {
+                // printf("abc\n");
                 char *index;
                 index = buffer;
                 _rrc_set_up_request.header.Subscription_ID = *index;

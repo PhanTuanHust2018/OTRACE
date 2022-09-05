@@ -50,7 +50,7 @@ void *process_trace_data(void *sockfd)
         {
             perror("\nrecive data fail\n");
         }
-        else if ()
+        else
         {
             char *index;
             index = buffer;
