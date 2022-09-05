@@ -17,9 +17,12 @@
 #define RRC_setup_complete 3
 #define RRC_realease 4
 
-
 #define FAIL 0
 #define SUCCESS 1
+
+#define TRACE_DURATION 10
+#define CELL_ID 1
+#define SUBSCRIBER_ID 11111
 
 /*-----define param for simulation-------*/
 #define sub_id 1
@@ -37,8 +40,25 @@
 #define Msg_length_ 6
 #define SIB_Mask_in_SI_ 0x0C
 
-enum EstablishmentCause  {emergency, highPriorityAccess, mt_Access, mo_Signalling, mo_Data, mo_VoiceCall, mo_VideoCall,
-mp_SMS, mps_PriorityAccess, mcs_PriorityAccess, spare6, spare5, spare4, spare3, spare2, spare1};
+enum EstablishmentCause
+{
+    emergency,
+    highPriorityAccess,
+    mt_Access,
+    mo_Signalling,
+    mo_Data,
+    mo_VoiceCall,
+    mo_VideoCall,
+    mp_SMS,
+    mps_PriorityAccess,
+    mcs_PriorityAccess,
+    spare6,
+    spare5,
+    spare4,
+    spare3,
+    spare2,
+    spare1
+};
 // #define mo_Signalling 1
 /*---------------------------------------*/
 struct RRC_OTRACE_START_REQ
@@ -47,7 +67,7 @@ struct RRC_OTRACE_START_REQ
     uint8_t trace_type;
     uint8_t cell_id;
     int subscriber_id;
-    int trace_duration; //second measurement unit
+    int trace_duration; // second measurement unit
 };
 
 struct RRC_OTRACE_START_RESP
@@ -64,7 +84,6 @@ struct RRC_OTRACE_DATA_Header
     uint8_t cell_id;
     int subscriber_id;
     int data_length;
-    
 };
 
 struct RRC_OTRACE_STOP_REQ
@@ -96,7 +115,8 @@ struct RRC_SETUP_HEADER
     uint16_t SIB_Mask_in_SI;
 };
 
-struct RRC_SETUP_REQUEST{
+struct RRC_SETUP_REQUEST
+{
     struct RRC_SETUP_HEADER header;
     // uint64_t ue_Identity_randomeVal:39;
     // uint8_t establishmentCause:7;
@@ -106,9 +126,8 @@ struct RRC_SETUP_REQUEST{
     uint8_t spare;
 };
 
-
-struct OTRACE_DATA_RRC_SETUP_REQ{
+struct OTRACE_DATA_RRC_SETUP_REQ
+{
     struct RRC_OTRACE_DATA_Header header;
     struct RRC_SETUP_REQUEST data;
-} ;
-
+};
