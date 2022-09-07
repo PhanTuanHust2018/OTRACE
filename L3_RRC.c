@@ -12,11 +12,6 @@
 #include "Param.h"
 
 struct RRC_SETUP_REQUEST _rrc_set_up_request;
-// typedef struct param_t
-// {
-//     int sock_fd;
-//     struct OTRACE_DATA_RRC_SETUP_REQ rrc_data_setup_req;
-// } param;
 
 char flag = 0;
 
@@ -26,7 +21,6 @@ void *send_trace_data(void *sockfd_p)
     char buffer[1024];
     int *sockfd = (int *)sockfd_p;
 
-    // memcpy(buffer, a->rrc_data_setup_req, sizeof(struct OTRACE_DATA_RRC_SETUP_REQ));
     struct OTRACE_DATA_RRC_SETUP_REQ rrc_data_setup_req;
     rrc_data_setup_req.header.msg_type = MSG_DATA;
     rrc_data_setup_req.header.trace_type = TRACE_INTERFACE_Uu;
@@ -44,14 +38,7 @@ void *send_trace_data(void *sockfd_p)
         sleep(2);
     }
 
-    // rrc_data_setup_req.data = _rrc_set_up_request;
-    // memcpy(buffer, &rrc_data_setup_req, sizeof(struct OTRACE_DATA_RRC_SETUP_REQ));
-    // if (send(*sockfd, (void *)(&buffer), sizeof(buffer), 0) < 0)
-    // {
-    //     perror("send respond fail\n");
-    // }
     pthread_exit(0);
-    // printf("\n%d\n", *sockfd);
 }
 
 void *socket_sever(void *port)
@@ -118,13 +105,6 @@ void *socket_sever(void *port)
                 {
                     perror("send respond fail\n");
                 }
-                /*------------Duration handler------------*/
-                // int duration = recv_cmd.trace_duration;
-                // int para[2];
-                // para[0] = duration;
-                // para[1] = connfd;
-                // pthread_t t_duration_handler;
-                // pthread_create(&t_duration_handler, NULL, duration_handler, (void *)para);
 
                 /*----------------------------------------*/
                 pthread_t t_send_trace_data;
@@ -132,36 +112,12 @@ void *socket_sever(void *port)
                 {
                 case TRACE_INTERFACE_Uu:
                 {
-                    // struct OTRACE_DATA_RRC_SETUP_REQ *_otrace_data = (struct OTRACE_DATA_RRC_SETUP_REQ *)malloc(sizeof(struct OTRACE_DATA_RRC_SETUP_REQ));
-                    // _otrace_data->header.msg_type = MSG_DATA;
-                    // _otrace_data->header.trace_type = TRACE_INTERFACE_Uu;
-                    // _otrace_data->header.cell_id = 1;
-                    // _otrace_data->header.subscriber_id = 11111;                                  // can xem lai
-                    // _otrace_data->header.data_length = sizeof(struct OTRACE_DATA_RRC_SETUP_REQ); // can xem lai
-                    // _otrace_data->data = _rrc_set_up_request;
-
                     memset(send_buffer, 0, sizeof(send_buffer));
-                    // memcpy(send_buffer, _otrace_data, sizeof(struct OTRACE_DATA_RRC_SETUP_REQ));
-                    // param *_param = (param *)malloc(sizeof(param));
-                    // _param->sock_fd = connfd;
-                    // _param->rrc_data_setup_req.header.msg_type = MSG_DATA;
-                    // _param->rrc_data_setup_req.header.trace_type = TRACE_INTERFACE_Uu;
-                    // _param->rrc_data_setup_req.header.cell_id = 1;
-                    // _param->rrc_data_setup_req.header.data_length = sizeof(struct OTRACE_DATA_RRC_SETUP_REQ);
-                    // _param->rrc_data_setup_req.header.subscriber_id = 11111;
-                    // _param->rrc_data_setup_req.data = _rrc_set_up_request;
-                    // printf("\n%d\n", connfd);
                     int *ptr_sockfd;
                     ptr_sockfd = &connfd;
 
                     pthread_create(&t_send_trace_data, NULL, send_trace_data, (void *)ptr_sockfd);
                     // pthread_join(t_send_trace_data, NULL);
-
-                    // if (send(connfd, (void *)(&send_buffer), sizeof(send_buffer), 0) < 0)
-                    // {
-                    //     perror("send respond fail\n");
-                    // }
-                    // free(_otrace_data);
                     break;
                 };
                 case TRACE_INTERFACE_S1AP:
