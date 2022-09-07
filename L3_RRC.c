@@ -246,7 +246,6 @@ void *socket_UE(void *port)
 
             else if (a > 0)
             {
-                // printf("abc\n");
                 char *index;
                 index = buffer;
                 _rrc_set_up_request.header.Subscription_ID = *index;
